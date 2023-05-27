@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Data Form</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+  <h2>Data Form</h2>
+  <form id="dataForm">
+    <label for="representativeName">Representative Name:</label>
+    <input type="text" id="representativeName" name="representativeName" required><br><br>
+
+    <label for="clientName">Client Name:</label>
+    <input type="text" id="clientName" name="clientName" required><br><br>
+
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" required><br><br>
+
+    <label for="emptyBeakerWeight">Empty Beaker Weight (g):</label>
+    <input type="number" id="emptyBeakerWeight" name="emptyBeakerWeight" step="0.01" required><br><br>
+
+    <label for="beforeBoiling">Weight Before Boiling (g):</label>
+    <input type="number" id="beforeBoiling" name="beforeBoiling" step="0.01" required><br><br>
+
+    <label for="afterBoiling">Weight After Boiling (g):</label>
+    <input type="number" id="afterBoiling" name="afterBoiling" step="0.01" required><br><br>
+
+    <label for="sedimentWeight">Weight of Sediment (g):</label>
+    <input type="number" id="sedimentWeight" name="sedimentWeight" step="0.01" required><br><br>
+
+    <label for="ffa">Free Fatty Acid (FFA):</label>
+    <input type="number" id="ffa" name="ffa" step="0.01" required><br><br>
+
+    <input type="submit" value="Submit">
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    $(document).ready(function() {
+      $('#dataForm').submit(function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        // Get form values
+        var representativeName = $('#representativeName').val();
+        var clientName = $('#clientName').val();
+        var date = $('#date').val();
+        var emptyBeakerWeight = parseFloat($('#emptyBeakerWeight').val());
+        var beforeBoiling = parseFloat($('#beforeBoiling').val());
+        var afterBoiling = parseFloat($('#afterBoiling').val());
+        var sedimentWeight = parseFloat($('#sedimentWeight').val());
+        var ffa = parseFloat($('#ffa').val());
+
+        // Perform calculations
+        var waterPercentage = calculateWaterPercentage(emptyBeakerWeight, beforeBoiling, afterBoiling);
+        var sedimentPercentage = calculateSedimentPercentage(sedimentWeight, beforeBoiling, emptyBeakerWeight);
+        var ffaPercentage = calculateFFAPercentage(ffa);
+
+        // Display result
+        $('#result').html('Water Percentage: ' + waterPercentage + '%<br>Sediment Percentage: ' + sedimentPercentage + '%<br>FFA Percentage: ' + ffaPercentage + '%');
+
+        // Save results to Google Sheets (implementation in later steps)
+        saveToGoogleSheets(representativeName, clientName, date, emptyBeakerWeight, beforeBoiling, afterBoiling, waterPercentage, sedimentWeight, sedimentPercentage, ffa, ffaPercentage);
+      });
+    });
+
+    function calculateWaterPercentage(emptyBeakerWeight, beforeBoiling, afterBoiling) {
+      var waterWeight = beforeBoiling - emptyBeakerWeight;
+      var totalWeightLoss = beforeBoiling - afterBoiling;
+      var waterPercentage = (totalWeightLoss / waterWeight) * 100;
+      return waterPercentage.toFixed(2); // Return percentage rounded to 2 decimal places
+    }
+
+    function calculateSedimentPercentage(sedimentWeight, beforeBoiling, emptyBeakerWeight) {
+      var sedimentPercentage = ((sedimentWeight - emptyBeakerWeight) / (beforeBoiling - emptyBeakerWeight)) * 100;
+      return sedimentPercentage.toFixed(2); // Return percentage rounded to 2 decimal places
+    }
+
+    function calculateFFAPercentage(ffa) {
+      var ffaPercentage = ffa / 2;
+      return ffaPercentage.toFixed(2); // Return percentage rounded to 2 decimal places
+    }
+
+    function saveToGoogleSheets(representativeName, clientName, date, emptyBeakerWeight, beforeBoiling, afterBoiling, waterPercentage, sedimentWeight, sedimentPercentage, ffa, ffaPercentage) {
+      // Implement saving to Google Sheets using the Google Sheets API
+      // This will be covered in the later steps
+    }
+  </script>
+</body>
+</html>
